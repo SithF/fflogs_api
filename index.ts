@@ -1,7 +1,8 @@
-import http from 'http';
+import * as http from 'http';
 import { URL } from 'url';
+import { IncomingMessage, ServerResponse } from 'http';
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer(async (req: IncomingMessage, res: ServerResponse) => {
   const url = new URL(req.url || '/', `http://${req.headers.host}`);
 
   if (req.method !== 'GET' || url.pathname !== '/token') {
