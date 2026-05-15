@@ -12,22 +12,24 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
   }
 
   try {
+    const credentials = Buffer.from(
+      `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
+    ).toString('base64');
+    
     const tokenRes = await fetch('https://www.fflogs.com/oauth/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${credentials}`,
       },
       body: new URLSearchParams({
         grant_type: 'client_credentials',
-        client_id: process.env.CLIENT_ID || '',
-        client_secret: process.env.CLIENT_SECRET || '',
       }),
     });
 
     if (!tokenRes.ok) {
-      const errText = await tokenRes.text();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end(`Failed to get token: ${tokenRes.status} ${errText}`);
+      res.end('Failed to get token');
       return;
     }
 
