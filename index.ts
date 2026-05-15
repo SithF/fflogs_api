@@ -25,8 +25,9 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
     });
 
     if (!tokenRes.ok) {
+      const errText = await tokenRes.text();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Failed to get token');
+      res.end(`Failed to get token: ${tokenRes.status} ${errText}`);
       return;
     }
 
