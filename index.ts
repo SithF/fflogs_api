@@ -15,7 +15,7 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
     const credentials = Buffer.from(
       `${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`
     ).toString('base64');
-    
+
     const tokenRes = await fetch('https://www.fflogs.com/oauth/token', {
       method: 'POST',
       headers: {
@@ -28,8 +28,9 @@ const server = http.createServer(async (req: IncomingMessage, res: ServerRespons
     });
 
     if (!tokenRes.ok) {
+      const errText = await tokenRes.text();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Failed to get token');
+      res.end(`Failed to get token: ${tokenRes.status} ${errText}`);
       return;
     }
 
